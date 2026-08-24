@@ -171,6 +171,7 @@ assembled into the built module.
 | | Task | Description |
 |---|------|-------------|
 | 🪄 | **prepare** | One-time template setup. Run once, after editing `module.psd1`. `-Platform <name>` overrides `ModuleTargetPlatform`. |
+| 🧹 | **cleanup** | One-time teardown. Deletes `prepare.ps1` and itself and strips both tasks out of `tasks.ps1`. Run once the repo is prepared and hardened. |
 | 📥 | **install_dev_requirements** | Installs ModuleBuilder, Configuration, Pester 5+, PSScriptAnalyzer, plus your extras. Once per host **per PowerShell edition**. |
 | 🏗️ | **build** | Clears `Dist/`, builds with ModuleBuilder into `Dist/<ModuleName>/<ModuleVersion>`. |
 | 🧪 | **test** | Runs the Pester suite against the built module. Fails on an empty run. |

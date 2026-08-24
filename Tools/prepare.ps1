@@ -357,5 +357,6 @@ Write-Host "--------------------------------"
 
 Write-Host "--------------------------------"
 Write-Host "Next: add functions under Source/Public, then run './tasks.ps1 build' and './tasks.ps1 test'."
-Write-Host "Delete Tools/prepare.ps1 and its 'prepare' entry in tasks.ps1 once you no longer need them."
+Write-Host "Work through Docs/HARDENING.md before the first release tag."
+Write-Host "Then run './tasks.ps1 cleanup' to delete the setup machinery you no longer need."
 Write-Host "--------------------------------"

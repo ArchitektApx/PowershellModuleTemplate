@@ -5,6 +5,7 @@ Everything here is meant to be run from the **repo root**. Every tool has a shor
 
 ```powershell
 ./tasks.ps1 prepare                    # once, right after cloning the template
+./tasks.ps1 cleanup                    # once, after prepare and hardening are done
 ./tasks.ps1 install_dev_requirements   # once per host, per PowerShell edition
 ./tasks.ps1 build                      # Source/ -> Dist/
 ./tasks.ps1 test
@@ -16,6 +17,7 @@ Everything here is meant to be run from the **repo root**. Every tool has a shor
 | Tool | Task | What it does |
 |---|---|---|
 | `prepare.ps1` | `prepare [-Platform <name>]` | One-time template setup: renames the manifest/root module, stamps the manifest, `build.psd1` and `LICENSE` from `module.psd1`, generates `PSScriptAnalyzer.psd1` and the CI matrix from the target-platform preset, renders `README.md` and `CHANGELOG.md`, removes the template-only scaffolding, installs the dev requirements. |
+| `cleanup.ps1` | `cleanup` | One-time teardown of the setup machinery: deletes `prepare.ps1` and itself, and strips `prepare`/`cleanup` out of `tasks.ps1`. Run it once the repo is prepared and hardened. Keeps `module.psd1` and `Docs/HARDENING.md`. |
 | `install_dev_requirements.ps1` | `install_dev_requirements` | Installs ModuleBuilder, Configuration, Pester 5+, PSScriptAnalyzer, plus anything in `module.psd1`'s `ModuleRequiredModules`, for the current user. |
 | `build.ps1` | `build` | Clears `Dist/` and builds the module with ModuleBuilder. |
 | `tests.ps1` | `test` | Runs the Pester suite against the built module. Throws on any failure, and on an empty run. |

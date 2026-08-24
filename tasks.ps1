@@ -2,7 +2,7 @@ param(
   # Positions are explicit on purpose: as soon as ONE parameter declares a Position, the
   # others stop binding positionally, and './tasks.ps1 test' would silently run the default.
   [Parameter(Position = 0)]
-  [ValidateSet('build', 'test', 'lint', 'coverage', 'install_dev_requirements', 'prepare', 'prepare_release')]
+  [ValidateSet('build', 'test', 'lint', 'coverage', 'install_dev_requirements', 'prepare', 'cleanup', 'prepare_release')]
   [string]$Task = 'build',
 
   # Only used by prepare_release: ./tasks.ps1 prepare_release 1.1.0
@@ -44,6 +44,10 @@ switch ($Task) {
     $prepareArgs = @{}
     if ($Platform) { $prepareArgs.Platform = $Platform }
     . $(Join-Path "Tools" "prepare.ps1") @prepareArgs
+    break
+  }
+  'cleanup' {
+    . $(Join-Path "Tools" "cleanup.ps1")
     break
   }
   'prepare_release' {
