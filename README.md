@@ -112,7 +112,7 @@ The built module lands in **`Dist/<ModuleName>/<ModuleVersion>`**. 🎉
 
 ---
 
-## 🖥️ Target platforms
+## 🖥 Target platforms
 
 `ModuleTargetPlatform` selects one of the presets in `Tools/platforms/`:
 
@@ -162,7 +162,7 @@ assembled into the built module.
 
 ---
 
-## 🎛️ Tasks Reference
+## 🎛 Tasks Reference
 
 ```powershell
 ./tasks.ps1 <TaskName>
