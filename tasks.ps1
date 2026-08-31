@@ -14,7 +14,12 @@ param(
 
   # Only used by prepare: overrides ModuleTargetPlatform from module.psd1.
   # One of the presets in Tools/platforms/ (PowerShell5.1, PowerShell7, PowerShell5.1And7).
-  [string]$Platform
+  [string]$Platform,
+
+  # Only used by test: which tree the behaviour suite imports, and which test files execute.
+  [ValidateSet('Source', 'Dist')]
+  [string]$Target = 'Source',
+  [string]$Path
 )
 
 switch ($Task) {
@@ -23,7 +28,10 @@ switch ($Task) {
     break
   }
   'test' {
-    . $(Join-Path "Tools" "tests.ps1")
+    # Splatted so an unset -Path falls through to the default rather than an empty string.
+    $testArgs = @{ Target = $Target }
+    if ($Path) { $testArgs.Path = $Path }
+    . $(Join-Path "Tools" "tests.ps1") @testArgs
     break
   }
   'lint' {

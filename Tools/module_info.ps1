@@ -44,6 +44,21 @@ function Get-ModuleInfo {
   }
 }
 
+function Get-TestTargetVariableName {
+  <#
+    .SYNOPSIS
+    Name of the environment variable that tells the test suite which tree to import.
+  #>
+  [OutputType([string])]
+  param(
+    [string]$RepoRoot = (Split-Path -Parent $PSScriptRoot)
+  )
+
+  # Derived from the module name, so it follows a prepare rename automatically.
+  $name = (Get-ModuleInfo -RepoRoot $RepoRoot).ModuleName -replace '[^A-Za-z0-9]', '_'
+  "$($name.ToUpperInvariant())_TEST_TARGET"
+}
+
 function Get-BuiltManifestPath {
   <#
     .SYNOPSIS
