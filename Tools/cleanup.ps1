@@ -8,7 +8,7 @@ nothing left to do. This deletes it:
 
   - Tools/prepare.ps1
   - any scaffolding prepare would normally have removed already (res/, Tools/templates/,
-    Tools/platforms/), in case the repo was prepared by hand
+    Tools/platforms/, Docs/CLASSES_AND_ENUMS.md), in case the repo was prepared by hand
   - the 'prepare' and 'cleanup' entries in tasks.ps1, and the -Platform parameter that only
     prepare used
   - the prepare/cleanup rows in Tools/README.md
@@ -86,7 +86,7 @@ try {
   Write-Host "Module: $($info.ModuleName)"
 
   # --- 2) Drop scaffolding prepare should already have removed --------------------------
-  foreach ($leftover in 'res', (Join-Path 'Tools' 'templates'), (Join-Path 'Tools' 'platforms')) {
+  foreach ($leftover in 'res', (Join-Path 'Tools' 'templates'), (Join-Path 'Tools' 'platforms'), (Join-Path 'Docs' 'CLASSES_AND_ENUMS.md')) {
     $path = Join-Path $repoRoot $leftover
     if (Test-Path -LiteralPath $path) {
       Remove-Item -LiteralPath $path -Recurse -Force
