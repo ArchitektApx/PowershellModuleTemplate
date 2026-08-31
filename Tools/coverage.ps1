@@ -1,12 +1,11 @@
 # Runs the Pester suite with code coverage against the BUILT module and prints every missed
-# command, so a gap can be traced back to a specific line.
+# command.
 #
 # Usage (from the repo root):
 #   ./tasks.ps1 coverage [-MinimumPercent 90]
 #   pwsh -NoProfile -NonInteractive -ExecutionPolicy Bypass -File Tools/coverage.ps1
 #
-# Coverage is measured per host, and anything that runs in a child process reads as missed
-# because the instrumentation cannot follow it. Compare hosts before calling a line untested.
+# Coverage is measured per host. Compare hosts before calling a line untested.
 
 param(
   # Exit non-zero when coverage falls below this percentage. 0 disables the gate.
