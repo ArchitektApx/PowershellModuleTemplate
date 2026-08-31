@@ -4,7 +4,9 @@
 foreach ($dir in 'Enum', 'Classes', 'Private', 'Public') {
   $path = Join-Path $PSScriptRoot $dir
   if (Test-Path -LiteralPath $path) {
-    foreach ($file in Get-ChildItem -Path $path -Filter '*.ps1') {
+    # -Recurse and Sort-Object FullName mirror how ModuleBuilder walks and concatenates the
+    # tree, so source and built module load files (and thus classes) in the same order.
+    foreach ($file in Get-ChildItem -Path $path -Filter '*.ps1' -Recurse | Sort-Object FullName) {
       . $file.FullName
     }
   }

@@ -20,9 +20,9 @@ Everything here is meant to be run from the **repo root**. Every tool has a shor
 | `cleanup.ps1` | `cleanup` | One-time teardown of the setup machinery: deletes `prepare.ps1` and itself, and strips `prepare`/`cleanup` out of `tasks.ps1`. Run it once the repo is prepared and hardened. Keeps `module.psd1` and `Docs/HARDENING.md`. |
 | `install_dev_requirements.ps1` | `install_dev_requirements` | Installs ModuleBuilder, Configuration, Pester 5+, PSScriptAnalyzer, plus anything in `module.psd1`'s `ModuleRequiredModules`, for the current user. |
 | `build.ps1` | `build` | Clears `Dist/` and builds the module with ModuleBuilder. |
-| `tests.ps1` | `test` | Runs the Pester suite against the built module. Throws on any failure, and on an empty run. |
+| `tests.ps1` | `test [-Target Source\|Dist] [-Path <tests>]` | Builds, then runs the Pester suite. `-Target` picks the tree the behaviour tests import (default `Source`); the artifact tests always read the build output. `-Path` picks which test files execute. Throws on any failure, and on an empty run. |
 | `lint.ps1` | `lint` | PSScriptAnalyzer over `Source/`: style/correctness, then WinPS 5.1 + pwsh 7 compatibility. Any finding fails. |
-| `coverage.ps1` | `coverage` | Test run with code coverage, listing every missed command. `-MinimumPercent` gates the run. |
+| `coverage.ps1` | `coverage` | Builds, then measures coverage over the source `.ps1` files, printing a per-file percentage and every missed command as `file:line: command`. `-MinimumPercent` gates the run. |
 | `prepare_release.ps1` | `prepare_release <x.y.z>` | Runs the gates, promotes the changelog, stamps the version, rebuilds, and verifies the built manifest. |
 | `get_changelog_section.ps1` | - | Extracts one section from `CHANGELOG.md`. Shared by `prepare_release` and the release workflow. |
 | `module_info.ps1` | - | Resolves the module's name and paths from `build.psd1`. Dot-sourced by the other tools and by `Tests/_TestHelpers.ps1` so no module name is ever hardcoded. |
@@ -30,8 +30,10 @@ Everything here is meant to be run from the **repo root**. Every tool has a shor
 | `platforms/` | - | Target-platform presets. Deleted once `prepare` has run. |
 | `templates/` | - | Skeletons rendered by `prepare.ps1`. Deleted once `prepare` has run. |
 
-Every tool imports the **built** module from `Dist/`, the same artifact a user installs, so
-`build` has to run before `test` or `coverage`.
+`test` and `coverage` build first themselves, so a run can never verify a stale artifact. The
+behaviour tests import the **source** tree by default, so a failure names a source file and
+line; the artifact tests in `Tests/Module.Tests.ps1` always read the **built** module from
+`Dist/`, the same artifact a user installs.
 
 ## Notes
 

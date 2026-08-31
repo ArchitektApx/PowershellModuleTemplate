@@ -20,12 +20,8 @@ if (-not (Get-Module -ListAvailable PSScriptAnalyzer)) {
   Write-Host "Installing PSScriptAnalyzer..."
   Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck -ErrorAction Stop
 }
-# Gate on the COMMAND being callable, not on the module being listed: a session can have
-# PSScriptAnalyzer in Get-Module yet not expose Invoke-ScriptAnalyzer (a half-finished
-# import, or an editor that loaded it into another state), and a module-presence check
-# would then skip the repairing import and fail at the first Invoke-ScriptAnalyzer call.
-# No -Force: on an already-working module it would throw 'Assembly with same name is
-# already loaded'; when the command is missing, a plain Import-Module brings it back.
+# Gate on the command, not the module: a listed module can still lack Invoke-ScriptAnalyzer.
+# No -Force: it throws 'Assembly with same name is already loaded' on a working module.
 if (-not (Get-Command Invoke-ScriptAnalyzer -ErrorAction SilentlyContinue)) {
   Import-Module PSScriptAnalyzer
 }

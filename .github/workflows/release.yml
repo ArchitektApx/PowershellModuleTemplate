@@ -37,8 +37,6 @@ jobs:
             exit 1
           fi
 
-      # This repository is a template until './tasks.ps1 prepare' has run. Publishing the
-      # unrenamed template to the Gallery would be a mistake, so refuse it outright.
       - name: Refuse to release an unprepared template
         if: startsWith(github.ref, 'refs/tags/')
         shell: pwsh

@@ -330,7 +330,7 @@ try {
   }
 
   # --- 8) Drop the template-only scaffolding -------------------------------------------
-  foreach ($leftover in 'res', (Join-Path 'Tools' 'templates'), (Join-Path 'Tools' 'platforms')) {
+  foreach ($leftover in 'res', (Join-Path 'Tools' 'templates'), (Join-Path 'Tools' 'platforms'), (Join-Path 'Docs' 'CLASSES_AND_ENUMS.md')) {
     $path = Join-Path $repoRoot $leftover
     if (Test-Path -LiteralPath $path) {
       Remove-Item -LiteralPath $path -Recurse -Force

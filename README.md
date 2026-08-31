@@ -21,15 +21,15 @@ lint with PSScriptAnalyzer, and ship to the PowerShell Gallery from a git tag.
 |  | |
 |---|---|
 | 🏗️ **ModuleBuilder** | Builds your module from source into a clean, versioned `Dist` output |
-| 🧪 **Pester 5** | Test runner wired to `Tests/`, running against the **built** module |
+| 🧪 **Pester 5** | Test runner wired to `Tests/`: behaviour tests run against the **source** tree (failures name a source file and line), artifact checks against the **built** module |
 | 🔍 **PSScriptAnalyzer** | Style and correctness pass, plus a compatibility pass against your target hosts |
-| 📊 **Code coverage** | Per-command coverage report with an optional minimum-percentage gate |
+| 📊 **Code coverage** | Per-file coverage report over the source tree with an optional minimum-percentage gate |
 | 🎯 **Task runner** | One entry point (`tasks.ps1`) for every tool |
 | 🤖 **GitHub Actions** | CI matrix across your target hosts, plus a tag-driven Gallery release |
 | 🧩 **Platform presets** | `PowerShell5.1`, `PowerShell7`, or both. One key sets the manifest, the lint targets, and the CI matrix |
 | 🪄 **`prepare` task** | Renames and stamps the whole template from a single `module.psd1` |
 | 🔐 **Hardening guide** | The GitHub rulesets and settings that make publishing to the Gallery safe |
-| 📁 **Structured source** | `Source/` layout with `Enum`, `Classes`, `Private`, and `Public` |
+| 📁 **Structured source** | `Source/` layout with `Enum`, `Classes`, `Private`, and `Public`. Classes and enums have rules of their own: see [Docs/CLASSES_AND_ENUMS.md](Docs/CLASSES_AND_ENUMS.md) |
 
 ---
 
@@ -149,13 +149,15 @@ assembled into the built module.
 │   ├── Private/
 │   └── Public/
 ├── 🧪 Tests/
-│   ├── _TestHelpers.ps1      # Imports the BUILT module; no module name hardcoded
-│   └── Module.Tests.ps1      # Example suite, green on a fresh clone
+│   ├── _TestHelpers.ps1      # Target selection and import helpers; no module name hardcoded
+│   ├── Harness.Tests.ps1     # Tests for the test harness itself
+│   └── Module.Tests.ps1      # Artifact checks against the BUILT module, green on a fresh clone
 ├── 🔧 Tools/
 │   ├── platforms/          # Target-platform presets (removed by prepare)
 │   ├── templates/          # Skeletons rendered by prepare (removed by prepare)
 │   └── ...                 # See Tools/README.md
 ├── 🔐 Docs/HARDENING.md    # GitHub settings to set before publishing (survives prepare)
+├── 📚 Docs/CLASSES_AND_ENUMS.md  # Class/enum rules and limits (removed by prepare)
 ├── 🤖 .github/workflows/   # ci.yml (matrix from the platform) and release.yml (tag -> PSGallery)
 └── 📦 Dist/                # Build output (gitignored, created by build)
 ```
@@ -174,9 +176,9 @@ assembled into the built module.
 | 🧹 | **cleanup** | One-time teardown. Deletes `prepare.ps1` and itself and strips both tasks out of `tasks.ps1`. Run once the repo is prepared and hardened. |
 | 📥 | **install_dev_requirements** | Installs ModuleBuilder, Configuration, Pester 5+, PSScriptAnalyzer, plus your extras. Once per host **per PowerShell edition**. |
 | 🏗️ | **build** | Clears `Dist/`, builds with ModuleBuilder into `Dist/<ModuleName>/<ModuleVersion>`. |
-| 🧪 | **test** | Runs the Pester suite against the built module. Fails on an empty run. |
+| 🧪 | **test** | Builds, then runs the Pester suite. `-Target Source` (default) or `Dist` picks the tree the behaviour tests import; `-Path <file-or-dir>` picks which tests execute. Fails on an empty run. |
 | 🔍 | **lint** | PSScriptAnalyzer over `Source/`: style and correctness, then compatibility against your target platform. |
-| 📊 | **coverage** | Coverage report over the built module. `-MinimumPercent 90` to gate. |
+| 📊 | **coverage** | Per-file coverage report over the source tree. `-MinimumPercent 90` to gate. |
 | 🚢 | **prepare_release** | `./tasks.ps1 prepare_release 1.1.0`. Gates, promotes the changelog, stamps the version, rebuilds, verifies. |
 
 📖 Full tool reference: **[Tools/README.md](Tools/README.md)**

@@ -48,14 +48,20 @@ See [Tools/README.md](Tools/README.md) for the full tool reference.
 │   ├── Classes/         # One .ps1 per class
 │   ├── Private/         # Internal helpers, not exported
 │   └── Public/          # One .ps1 per exported function
-├── Tests/               # Pester tests, run against the BUILT module
+├── Tests/               # Pester tests; behaviour tests import Source, artifact checks the build
 ├── Tools/               # Build, test, lint, coverage, release tooling
 ├── Docs/HARDENING.md    # GitHub settings to set before publishing
 └── Dist/                # Build output (gitignored)
 ```
 
-Everything in `Tools/` imports the **built** module from `Dist/`, the same artifact a user
-installs, so `build` has to run before `test` or `coverage`.
+`test` and `coverage` build first themselves. Behaviour tests run against `Source/` by default
+(`./tasks.ps1 test -Target Dist` switches); the artifact tests in `Tests/Module.Tests.ps1`
+always read the built module from `Dist/`, the same artifact a user installs.
+
+Classes and enums: files must be `.ps1`, they load in alphabetical full-path order on both
+trees (name base classes so they sort before derived ones), and `using module` between source
+files does not work. Tests that name a class type literally belong in `Tests/Module.Tests.ps1`,
+reached via `using module` on the built manifest.
 
 ## Releasing
 
