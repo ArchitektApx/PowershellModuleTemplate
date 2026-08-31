@@ -30,7 +30,14 @@ $config.Run.Path = $testPath.Path
 # letting the throw below propagate.
 $config.Run.PassThru = $true
 $config.Output.Verbosity = 'Detailed'
-$result = Invoke-Pester -Configuration $config
+
+$strict = $ErrorActionPreference
+try {
+  $ErrorActionPreference = 'Continue'
+  $result = Invoke-Pester -Configuration $config
+} finally {
+  $ErrorActionPreference = $strict
+}
 
 if (-not $result -or $result.FailedCount -gt 0) {
   throw "Tests failed ($($result.FailedCount) failed / $($result.TotalCount) total)."

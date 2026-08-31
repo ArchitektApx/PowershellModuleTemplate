@@ -33,7 +33,14 @@ $c.Output.Verbosity = 'None'
 $c.CodeCoverage.Enabled = $true
 $c.CodeCoverage.Path = $psm1
 
-$r = Invoke-Pester -Configuration $c
+$strict = $ErrorActionPreference
+try {
+  $ErrorActionPreference = 'Continue'
+  $r = Invoke-Pester -Configuration $c
+} finally {
+  $ErrorActionPreference = $strict
+}
+
 $cc = $r.CodeCoverage
 $pct = if ($cc.CommandsAnalyzedCount) { $cc.CommandsExecutedCount / $cc.CommandsAnalyzedCount * 100 } else { 0 }
 
