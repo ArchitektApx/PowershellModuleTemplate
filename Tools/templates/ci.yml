@@ -43,6 +43,10 @@ jobs:
         shell: pwsh
         run: ${{ matrix.host }} -NoProfile -ExecutionPolicy Bypass -File ./tasks.ps1 -Task build
 
-      - name: Test
+      - name: Test (source tree)
         shell: pwsh
-        run: ${{ matrix.host }} -NoProfile -ExecutionPolicy Bypass -File ./tasks.ps1 -Task test
+        run: ${{ matrix.host }} -NoProfile -ExecutionPolicy Bypass -File ./tasks.ps1 -Task test -Target Source
+
+      - name: Test (built module, artifact checks)
+        shell: pwsh
+        run: ${{ matrix.host }} -NoProfile -ExecutionPolicy Bypass -File ./tasks.ps1 -Task test -Target Dist -Path Tests/Module.Tests.ps1
